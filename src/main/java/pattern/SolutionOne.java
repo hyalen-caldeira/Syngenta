@@ -1,54 +1,51 @@
+package pattern;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ImageAssessment {
-    public int countGreens(String imageFileName) {
-        int numberOfGreens = 0;
+public class SolutionOne implements Strategy {
+    @Override
+    public String doOperation(String fileName) {
+        StringBuilder result = new StringBuilder();
 
         try {
-            BufferedImage imagem = ImageIO.read(new File(imageFileName));
+            BufferedImage imagem = ImageIO.read(new File("Syngenta.bmp"));
 
             int height = imagem.getHeight();
             int width = imagem.getWidth();
+
+            String binary = null;
 
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     int RGBA = imagem.getRGB(x, y);
 
                     Color color = new Color(RGBA);
+                    int sum = getSumOfColors(color);
 
-                    if (isGreen(color))
-                        numberOfGreens++;
+                    binary = Integer.toBinaryString(sum);
+
+                    int binario = Integer.parseInt(binary);
+
+                    if (binario != 0)
+                        result.append((char) binario);
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
 
-        return numberOfGreens;
+        return result.toString();
     }
 
-    private boolean isGreen(Color color) {
+    private int getSumOfColors(Color color) {
         int green = color.getGreen();
         int red = color.getRed();
         int blue = color.getBlue();
 
-        if (green > red && green > blue)
-            return true;
-
-        return false;
+        return green + red + blue;
     }
 }
-
-/*
-echo "# Syngenta" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/hyalen-moreira/Syngenta.git
-git push -u origin main
- */
